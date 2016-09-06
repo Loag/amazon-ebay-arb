@@ -14,6 +14,7 @@ AWSSecretKey = 'your AWS secret key here'
 amazonProductAdvName = 'your amazon product advertising name here'
 EbayKey = 'your ebay developer key here'
 
+search = u'put what you are looking for here EX: Taylormade golf club'
 
 amazon = AmazonAPI(AWSkey,AWSSecretKey,amazonProductAdvName,MaxQPS=.9)
 ebayApi = finding(appid=EbayKey, config_file=None)
@@ -42,7 +43,7 @@ def run():
     try:
         api_request = {
             #'keywords': u'niño',
-            'keywords': u'Taylormade golf club',
+            'keywords': search,
             'itemFilter': [
                 {'name': 'LocatedIn',
                  'value': 'US'},
