@@ -70,7 +70,7 @@ def run():
             ebayprice = item.get('sellingStatus')
             current = ebayprice.get('currentPrice')
             value = current.get('value')
-            ebayURL = current.get('viewItemURL')
+            ebayURL = item.get('viewItemURL')
             try:
                 findOnAmazon(ebaytitle,value,ebaytitle,ebayItemID,ebayURL)
             except:
