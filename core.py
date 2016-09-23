@@ -1,12 +1,8 @@
 from amazon.api import AmazonAPI
-from bs4 import BeautifulSoup
-import datetime
 from ebaysdk.finding import Connection as finding
 from ebaysdk.exception import ConnectionError
-import os
-import sys
-from optparse import OptionParser
 import csv
+from fuzzywuzzy import fuzz
 
 #keys
 AWSkey = 'your AWS key here'
@@ -31,12 +27,18 @@ def findOnAmazon(ebayItem,ebayPrice,fullEbayTitle,ebayItemID,ebayItemURL):
    amazonISBN = response[0].isbn
    amazonOfferURL = response[0].offer_url
 
-   if float(amazonPrice) > float(ebayPrice)*1.5:
-       possibleReturn = float(amazonPrice) - float(ebayPrice)
-       possret = float("{0:.2f}".format(possibleReturn))
-       print(possret)
-       data = [fullEbayTitle,ebayItemID,ebayPrice,ebayItemURL,amazonTitle,amazonISBN,amazonPrice,amazonOfferURL,possret]
-       allData.append(data)
+    #check how close the titles are so we can better understand if they are the same product
+   r = fuzz.partial_ratio(ebayItem,amazonTitle)
+
+   if r > 75:
+    # we can assume that they are the same thing
+        if float(amazonPrice) > float(ebayPrice)*1.5:
+            # check if the item is at least 50% more expensive on amazon so we have room to make money 
+            possibleReturn = float(amazonPrice) - float(ebayPrice)
+            possret = float("{0:.2f}".format(possibleReturn))
+            print(possret)
+            data = [fullEbayTitle,ebayItemID,ebayPrice,ebayItemURL,amazonTitle,amazonISBN,amazonPrice,amazonOfferURL,possret]
+            allData.append(data)
 
 def run():
 
@@ -84,4 +86,6 @@ def run():
         print(e)
         print(e.response.dict())
 
-run()
+
+if __name__ == '__main__':
+    run()
