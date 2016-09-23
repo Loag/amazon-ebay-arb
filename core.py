@@ -20,7 +20,7 @@ filewriter = csv.writer(path)
 allData = []
 filewriter.writerow(['Ebay Item Title', 'Ebay Item ID','Ebay Price','ebay Item URL', 'Amazon Item Title','Amazon ISBN', 'Amazon Price', 'Amazon Item URL', 'Price Difference'])
 
-def findOnAmazon(ebayItem,ebayPrice,fullEbayTitle,ebayItemID,ebayItemURL):
+def findOnAmazon(ebayItem,ebayPrice,ebayItemID,ebayItemURL):
    response = amazon.search_n(1,Keywords=ebayItem, SearchIndex='All')
    amazonPrice = response[0].price_and_currency[0]
    amazonTitle = response[0].title
@@ -33,18 +33,17 @@ def findOnAmazon(ebayItem,ebayPrice,fullEbayTitle,ebayItemID,ebayItemURL):
    if r > 75:
     # we can assume that they are the same thing
         if float(amazonPrice) > float(ebayPrice)*1.5:
-            # check if the item is at least 50% more expensive on amazon so we have room to make money 
+            # check if the item is at least 50% more expensive on amazon so we have room to make money
             possibleReturn = float(amazonPrice) - float(ebayPrice)
             possret = float("{0:.2f}".format(possibleReturn))
             print(possret)
-            data = [fullEbayTitle,ebayItemID,ebayPrice,ebayItemURL,amazonTitle,amazonISBN,amazonPrice,amazonOfferURL,possret]
+            data = [ebayItem,ebayItemID,ebayPrice,ebayItemURL,amazonTitle,amazonISBN,amazonPrice,amazonOfferURL,possret]
             allData.append(data)
 
 def run():
 
     try:
         api_request = {
-            #'keywords': u'niño',
             'keywords': search,
             'itemFilter': [
                 {'name': 'LocatedIn',
@@ -65,8 +64,6 @@ def run():
         for item in clearedArray:
 
             ebaytitle = item.get('title')
-            data = ebaytitle.split(" ")
-            titleString = " ".join(data[:6])
 
             ebayItemID = item.get('itemId')
             ebayprice = item.get('sellingStatus')
@@ -74,7 +71,7 @@ def run():
             value = current.get('value')
             ebayURL = item.get('viewItemURL')
             try:
-                findOnAmazon(ebaytitle,value,ebaytitle,ebayItemID,ebayURL)
+                findOnAmazon(ebaytitle,value,ebayItemID,ebayURL)
             except:
                 print("couldn`t find matching object")
 
