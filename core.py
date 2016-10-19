@@ -3,6 +3,12 @@ from ebaysdk.finding import Connection as finding
 from ebaysdk.exception import ConnectionError
 import csv
 from fuzzywuzzy import fuzz
+import argparse
+
+parser = argparse.ArgumentParser(description='Description of your program')
+parser.add_argument('-S','--SearchTerm', help='what you would like to search for', required=True)
+
+args = vars(parser.parse_args())
 
 #keys
 AWSkey = 'your AWS key here'
@@ -10,7 +16,7 @@ AWSSecretKey = 'your AWS secret key here'
 amazonProductAdvName = 'your amazon product advertising name here'
 EbayKey = 'your ebay developer key here'
 
-search = u'put what you are looking for here EX: Taylormade golf club'
+search = u'%s'%args['SearchTerm']
 
 amazon = AmazonAPI(AWSkey,AWSSecretKey,amazonProductAdvName,MaxQPS=.9)
 ebayApi = finding(appid=EbayKey, config_file=None)
@@ -85,4 +91,5 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    if args['SearchTerm']:
+        run()
